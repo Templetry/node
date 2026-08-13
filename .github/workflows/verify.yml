@@ -1,0 +1,44 @@
+name: Verify forms
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: verify-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  express-api:
+    name: express-api (${{ matrix.combo.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        combo:
+          - { name: full, preset: full, test: true }
+          - { name: minimal, preset: minimal, test: false }
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install templetry
+        run: |
+          curl -sL -o /usr/local/bin/templetry \
+            "https://github.com/Templetry/engine/releases/download/v1.4.0/templetry-linux-amd64"
+          chmod +x /usr/local/bin/templetry
+      - name: Render
+        run: |
+          templetry render --template ./express-api --out "$RUNNER_TEMP/out" \
+            --set "project_name=Verify App" --preset "${{ matrix.combo.preset }}"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build rendered output
+        working-directory: ${{ runner.temp }}/out
+        run: |
+          npm install
+          npm run build
+      - name: Test rendered output
+        if: matrix.combo.test
+        working-directory: ${{ runner.temp }}/out
+        run: npm test

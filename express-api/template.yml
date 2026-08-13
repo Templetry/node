@@ -1,0 +1,39 @@
+schema_version: 1
+name: node-express-api
+description: Express API — TypeScript (NodeNext), health endpoint, Vitest, optional Dockerfile
+platform: backend
+framework: express
+
+variables:
+  - key: project_name
+    label: Project name
+    type: string
+    pattern: "^[A-Za-z][A-Za-z0-9 ]*$"
+
+identity:
+  - from: "TemplateApp"                # docs
+    to: "{project_name.pascal}"
+  - from: "template-app"               # package name, docker tag
+    to: "{project_name.kebab}"
+
+features:
+  - key: vitest
+    label: Vitest test suite
+    default: true
+    files: ["src/app.test.ts"]
+  - key: docker
+    label: Dockerfile (node:22-slim)
+    default: true
+    files: ["Dockerfile", ".dockerignore"]
+
+presets:
+  - key: full
+    label: Everything on
+    features: {vitest: true, docker: true}
+  - key: minimal
+    label: Bare API
+    features: {vitest: false, docker: false}
+
+verify:
+  image: node:22
+  run: npm install && npm run build && npm test
