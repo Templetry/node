@@ -5,8 +5,8 @@ Node.js templates for [Templetry](https://github.com/Templetry). One **parent re
 | Form | What it is | Status |
 |---|---|---|
 | [`express-api/`](express-api/) | Express API — TypeScript (NodeNext), Vitest, optional Dockerfile, presets `full`/`minimal` | ✅ ready |
-| [`fastify-api/`](fastify-api/) | Fastify API — routes as plugins, JSON Schema validation, optional OpenAPI | 🚧 awaiting first green CI |
-| [`nestjs/`](nestjs/) | NestJS service — modules and DI, optional DTO validation, Jest unit + e2e | 🚧 awaiting first green CI |
+| [`fastify-api/`](fastify-api/) | Fastify API — routes as plugins, JSON Schema validation, optional OpenAPI | ✅ ready |
+| [`nestjs/`](nestjs/) | NestJS service — modules and DI, optional DTO validation, Jest unit + e2e | ✅ ready |
 
 ## Usage
 
