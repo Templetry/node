@@ -1,8 +1,9 @@
 schema_version: 1
 name: node-express-api
 description: Express API — TypeScript (NodeNext), health endpoint, Vitest, optional Dockerfile
-platform: backend
-framework: express
+kinds: [backend]
+languages: [typescript]
+frameworks: [express]
 
 variables:
   - key: project_name
