@@ -1,0 +1,55 @@
+schema_version: 1
+name: node-fastify-api
+description: Fastify API — TypeScript (NodeNext), routes as plugins, JSON Schema validation, optional OpenAPI, Vitest
+kinds: [backend]
+languages: [typescript]
+frameworks: [fastify]
+
+variables:
+  - key: project_name
+    label: Project name
+    type: string
+    pattern: "^[A-Za-z][A-Za-z0-9 ]*$"
+
+identity:
+  - from: "TemplateApp"                # docs
+    to: "{project_name.pascal}"
+  - from: "template-app"               # package name, docker tag, log line
+    to: "{project_name.kebab}"
+
+features:
+  - key: openapi
+    label: OpenAPI docs at /docs (Swagger UI)
+    default: true
+    files: ["src/plugins/openapi.ts"]
+    patches:
+      - file: package.json
+        op: add
+        path: /dependencies/@fastify~1swagger
+        value: "^9.4.0"
+      - file: package.json
+        op: add
+        path: /dependencies/@fastify~1swagger-ui
+        value: "^5.2.0"
+
+  - key: vitest
+    label: Vitest test suite
+    default: true
+    files: ["src/app.test.ts"]
+
+  - key: docker
+    label: Dockerfile (node:22-slim)
+    default: true
+    files: ["Dockerfile", ".dockerignore"]
+
+presets:
+  - key: full
+    label: Everything on
+    features: {openapi: true, vitest: true, docker: true}
+  - key: minimal
+    label: Bare API
+    features: {openapi: false, vitest: false, docker: false}
+
+verify:
+  image: node:22
+  run: npm install && npm run build && npm test

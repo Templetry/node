@@ -42,3 +42,54 @@ jobs:
         if: matrix.combo.test
         working-directory: ${{ runner.temp }}/out
         run: npm test
+
+  fastify-api:
+    name: fastify-api (${{ matrix.preset }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        preset: [full, minimal]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Templetry/.github/actions/setup-templetry@main
+      - name: Render
+        run: |
+          templetry render --template ./fastify-api --out "$RUNNER_TEMP/out" \
+            --set "project_name=Verify App" --preset "${{ matrix.preset }}"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build and test rendered output
+        working-directory: ${{ runner.temp }}/out
+        run: |
+          npm install
+          npm run build
+          npm test
+
+  nestjs:
+    name: nestjs (${{ matrix.name }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { name: default, args: "" }
+          - { name: minimal, args: "--preset minimal" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: Templetry/.github/actions/setup-templetry@main
+      - name: Render
+        run: |
+          templetry render --template ./nestjs --out "$RUNNER_TEMP/out" \
+            --set "project_name=Verify App" ${{ matrix.args }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Build and test rendered output
+        working-directory: ${{ runner.temp }}/out
+        run: |
+          npm install
+          npm run build
+          npm test
+          npm run test:e2e

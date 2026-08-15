@@ -1,0 +1,50 @@
+schema_version: 1
+name: node-nestjs
+description: NestJS service — modules and DI, optional DTO validation with class-validator, Jest unit and e2e suites
+kinds: [backend]
+languages: [typescript]
+frameworks: [nestjs]
+
+variables:
+  - key: project_name
+    label: Project name
+    type: string
+    pattern: "^[A-Za-z][A-Za-z0-9 ]*$"
+
+identity:
+  - from: "TemplateApp"                # class prefix, docs
+    to: "{project_name.pascal}"
+  - from: "template-app"               # package name, docker tag
+    to: "{project_name.kebab}"
+
+# Tests are not a feature here: Nest scaffolds them, its testing module is
+# part of how the framework is used, and making them optional would only
+# add a combination nobody wants.
+features:
+  - key: validation
+    label: DTO validation (class-validator + global pipe)
+    default: true
+    files: ["src/hello/dto/greet.dto.ts"]
+    patches:
+      - file: package.json
+        op: add
+        path: /dependencies/class-validator
+        value: "^0.14.1"
+      - file: package.json
+        op: add
+        path: /dependencies/class-transformer
+        value: "^0.5.1"
+
+  - key: docker
+    label: Dockerfile (node:22-slim)
+    default: true
+    files: ["Dockerfile", ".dockerignore"]
+
+presets:
+  - key: minimal
+    label: Bare service — no validation, no Docker
+    features: {validation: false, docker: false}
+
+verify:
+  image: node:22
+  run: npm install && npm run build && npm test && npm run test:e2e
