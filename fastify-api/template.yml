@@ -18,6 +18,16 @@ identity:
     to: "{project_name.kebab}"
 
 features:
+  - key: environments
+    label: development / staging / production profiles (ADR-0018)
+    default: true
+    files:
+      - "src/config.ts"
+      - "src/config.test.ts"
+      - ".env.development"
+      - ".env.staging"
+      - ".env.production"
+
   - key: openapi
     label: OpenAPI docs at /docs (Swagger UI)
     default: true
@@ -45,10 +55,10 @@ features:
 presets:
   - key: full
     label: Everything on
-    features: {openapi: true, vitest: true, docker: true}
+    features: {environments: true, openapi: true, vitest: true, docker: true}
   - key: minimal
     label: Bare API
-    features: {openapi: false, vitest: false, docker: false}
+    features: {environments: false, openapi: false, vitest: false, docker: false}
 
 verify:
   image: node:22

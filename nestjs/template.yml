@@ -21,6 +21,28 @@ identity:
 # part of how the framework is used, and making them optional would only
 # add a combination nobody wants.
 features:
+  - key: environments
+    label: development / staging / production profiles (ADR-0018)
+    default: true
+    files:
+      - "src/config/**"
+      - ".env.development"
+      - ".env.staging"
+      - ".env.production"
+    patches:
+      - file: package.json
+        op: add
+        path: /dependencies/@nestjs~1config
+        value: "^4.0.0"
+      - file: package.json
+        op: add
+        path: /dependencies/class-validator
+        value: "^0.14.1"
+      - file: package.json
+        op: add
+        path: /dependencies/class-transformer
+        value: "^0.5.1"
+
   - key: validation
     label: DTO validation (class-validator + global pipe)
     default: true
@@ -43,7 +65,7 @@ features:
 presets:
   - key: minimal
     label: Bare service — no validation, no Docker
-    features: {validation: false, docker: false}
+    features: {environments: false, validation: false, docker: false}
 
 verify:
   image: node:22

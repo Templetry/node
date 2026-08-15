@@ -39,7 +39,6 @@ jobs:
           npm install
           npm run build
       - name: Test rendered output
-        if: matrix.combo.test
         working-directory: ${{ runner.temp }}/out
         run: npm test
 

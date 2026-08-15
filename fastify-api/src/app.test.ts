@@ -18,7 +18,9 @@ afterAll(async () => {
 test("healthz responds ok", async () => {
   const res = await app.inject({ method: "GET", url: "/healthz" });
   expect(res.statusCode).toBe(200);
-  expect(res.json()).toEqual({ status: "ok" });
+  // The status is the contract; the payload may carry more (the active
+  // environment, a build id) without that being a breaking change.
+  expect(res.json().status).toBe("ok");
 });
 
 test("hello greets by name", async () => {

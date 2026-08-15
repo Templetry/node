@@ -18,6 +18,16 @@ identity:
     to: "{project_name.kebab}"
 
 features:
+  - key: environments
+    label: development / staging / production profiles (ADR-0018)
+    default: true
+    files:
+      - "src/config.ts"
+      - "src/config.test.ts"
+      - ".env.development"
+      - ".env.staging"
+      - ".env.production"
+
   - key: vitest
     label: Vitest test suite
     default: true
@@ -30,10 +40,10 @@ features:
 presets:
   - key: full
     label: Everything on
-    features: {vitest: true, docker: true}
+    features: {environments: true, vitest: true, docker: true}
   - key: minimal
     label: Bare API
-    features: {vitest: false, docker: false}
+    features: {environments: false, vitest: false, docker: false}
 
 verify:
   image: node:22

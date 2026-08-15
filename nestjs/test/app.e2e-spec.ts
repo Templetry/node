@@ -31,7 +31,12 @@ describe("TemplateApp (e2e)", () => {
   });
 
   it("GET /healthz", () =>
-    request(app.getHttpServer()).get("/healthz").expect(200).expect({ status: "ok" }));
+    request(app.getHttpServer())
+      .get("/healthz")
+      .expect(200)
+      // The status is the contract; the payload may carry more (the active
+      // environment) without that being a breaking change.
+      .expect((res) => expect(res.body.status).toBe("ok")));
 
   it("GET /api/hello/:name", () =>
     request(app.getHttpServer())

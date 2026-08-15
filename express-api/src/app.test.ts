@@ -16,7 +16,9 @@ afterAll(() => new Promise<void>((resolve) => void server.close(() => resolve())
 test("healthz responds ok", async () => {
   const res = await fetch(`${base}/healthz`);
   expect(res.status).toBe(200);
-  expect(await res.json()).toEqual({ status: "ok" });
+  // The status is the contract; the payload may carry more (the active
+  // environment, a build id) without that being a breaking change.
+  expect((await res.json()).status).toBe("ok");
 });
 
 test("hello greets by name", async () => {
